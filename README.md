@@ -4,4 +4,4 @@ This project was generated with [React Native](https://reactnative.dev/) version
 
 ## Development mode
 
-Run `npm run android` for a dev mode. The app will automatically running in port 7000.
+Run `npx run android` for a dev mode. The app will automatically running in port 7000.
