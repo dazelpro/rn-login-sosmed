@@ -1,72 +1,32 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, ToastAndroid} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Login from './src/screens/Login';
+import Dashboard from './src/screens/Dashboard';
+import SplashScreen from './src/screens/SplashScreen';
+
+const Stack = createNativeStackNavigator();
 const App = () => {
-    const onLoginGoogle = () => {
-        ToastAndroid.show(
-            'Login google sedang diproses',
-            ToastAndroid.SHORT,
-        );
-    };
-    const onLoginFacebook = () => {
-        ToastAndroid.show(
-            'Login facebook sedang diproses',
-            ToastAndroid.SHORT,
-        );
-    };
-    const onLoginEmail = () => {
-        ToastAndroid.show(
-            'Fitur ini belum tersedia',
-            ToastAndroid.SHORT,
-        );
-    };
     return (
-        <View
-            style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#EFF2F5',
-            }}>
-            <TouchableOpacity
-                style={{
-                    backgroundColor: '#FFF',
-                    marginTop: 10,
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    width: 200,
-                    alignItems: 'center',
-                    borderRadius: 8,
-                }}
-                onPress={onLoginGoogle}>
-                <Text>Login with Google</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={{
-                    backgroundColor: '#1877F2',
-                    marginTop: 10,
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    width: 200,
-                    alignItems: 'center',
-                    borderRadius: 8,
-                }}
-                onPress={onLoginFacebook}>
-                <Text style={{color: '#FFF'}}>Login with Facebook</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={{
-                    backgroundColor: '#F57208',
-                    marginTop: 10,
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    width: 200,
-                    alignItems: 'center',
-                    borderRadius: 8,
-                }}
-                onPress={onLoginEmail}>
-                <Text style={{color: '#FFF'}}>Login with Email</Text>
-            </TouchableOpacity>
-        </View>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="SplashScreen">
+                <Stack.Screen
+                    name="SplashScreen"
+                    options={{headerShown: false}}
+                    component={SplashScreen}
+                />
+                <Stack.Screen
+                    name="Login"
+                    options={{headerShown: false}}
+                    component={Login}
+                />
+                <Stack.Screen
+                    name="Dashboard"
+                    options={{headerShown: false}}
+                    component={Dashboard}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 };
 
