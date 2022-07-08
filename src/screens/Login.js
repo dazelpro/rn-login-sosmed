@@ -1,4 +1,7 @@
-import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import {
+    GoogleSignin,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
 import React from 'react';
 import {
     View,
@@ -7,6 +10,11 @@ import {
     ToastAndroid,
     StatusBar,
 } from 'react-native';
+import {
+    GraphRequest,
+    GraphRequestManager,
+    LoginManager,
+} from 'react-native-fbsdk';
 
 GoogleSignin.configure({
     webClientId:
@@ -15,7 +23,6 @@ GoogleSignin.configure({
 });
 
 const Login = ({navigation}) => {
-
     const onLoginGoogle = async () => {
         try {
             await GoogleSignin.hasPlayServices();
@@ -30,14 +37,23 @@ const Login = ({navigation}) => {
                 },
             };
             // loginProcess(data);
-            ToastAndroid.show(`Selamat datang ${data.user.name}`, ToastAndroid.SHORT);
+            ToastAndroid.show(
+                `Selamat datang ${data.user.name}`,
+                ToastAndroid.SHORT,
+            );
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                ToastAndroid.show('Login google batal', ToastAndroid.SHORT);
+                ToastAndroid.show(
+                    'Proses login dibatalkan',
+                    ToastAndroid.SHORT,
+                );
             } else if (error.code === statusCodes.IN_PROGRESS) {
                 console.log('e 2');
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                ToastAndroid.show('Sistem tidak support', ToastAndroid.SHORT);
+                ToastAndroid.show(
+                    'Play service tidak didukung',
+                    ToastAndroid.SHORT,
+                );
             } else {
                 console.log(error);
             }
@@ -45,14 +61,60 @@ const Login = ({navigation}) => {
     };
 
     const onLoginFacebook = () => {
-        ToastAndroid.show('Login facebook sedang diproses', ToastAndroid.SHORT);
-        navigation.navigate('Dashboard');
+        LoginManager.logInWithPermissions(['public_profile']).then(
+            login => {
+                if (login.isCancelled) {
+                    ToastAndroid.show(
+                        'Login facebook batal',
+                        ToastAndroid.SHORT,
+                    );
+                } else {
+                    //Dari sini ambil token
+                    const tokenFB = null;
+                    const PROFILE_REQUEST_PARAMS = {
+                        fields: {
+                            string: 'id, name, email, picture.type(large)',
+                        },
+                    };
+                    const profileRequest = new GraphRequest(
+                        '/me',
+                        {tokenFB, parameters: PROFILE_REQUEST_PARAMS},
+                        (error, result) => {
+                            if (error) {
+                                console.log('login info has error: ' + error);
+                            } else {
+                                let data = {
+                                    user: {
+                                        email: result['email'] || '-',
+                                        id: result['id'],
+                                        name: result['name'],
+                                        photo: result['picture']['data']['url'],
+                                        provider: 'Facebook',
+                                    },
+                                };
+                                // loginProcess(data);
+                                ToastAndroid.show(
+                                    `Selamat datang ${data.user.name}`,
+                                    ToastAndroid.SHORT,
+                                );
+                            }
+                        },
+                    );
+                    new GraphRequestManager()
+                        .addRequest(profileRequest)
+                        .start();
+                }
+            },
+            error => {
+                console.log('Login fail with error: ' + error);
+            },
+        );
     };
 
     const onLoginEmail = () => {
         ToastAndroid.show('Fitur ini belum tersedia', ToastAndroid.SHORT);
     };
-    
+
     return (
         <>
             <StatusBar
