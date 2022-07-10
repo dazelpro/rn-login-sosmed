@@ -16,6 +16,11 @@ import {
     LoginManager,
 } from 'react-native-fbsdk';
 
+// Redux
+import {useDispatch} from 'react-redux';
+import {LoginAction} from '../redux/actions';
+// End
+
 GoogleSignin.configure({
     webClientId:
         '53061255389-m1q22e861121jn79k9me2af05uq8tuk1.apps.googleusercontent.com',
@@ -23,6 +28,8 @@ GoogleSignin.configure({
 });
 
 const Login = ({navigation}) => {
+    const dispatch = useDispatch();
+
     const onLoginGoogle = async () => {
         try {
             await GoogleSignin.hasPlayServices();
@@ -36,11 +43,7 @@ const Login = ({navigation}) => {
                     provider: 'Google',
                 },
             };
-            // loginProcess(data);
-            ToastAndroid.show(
-                `Selamat datang ${data.user.name}`,
-                ToastAndroid.SHORT,
-            );
+            loginProcess(data);
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
                 ToastAndroid.show(
@@ -69,7 +72,6 @@ const Login = ({navigation}) => {
                         ToastAndroid.SHORT,
                     );
                 } else {
-                    //Dari sini ambil token
                     const tokenFB = null;
                     const PROFILE_REQUEST_PARAMS = {
                         fields: {
@@ -92,11 +94,7 @@ const Login = ({navigation}) => {
                                         provider: 'Facebook',
                                     },
                                 };
-                                // loginProcess(data);
-                                ToastAndroid.show(
-                                    `Selamat datang ${data.user.name}`,
-                                    ToastAndroid.SHORT,
-                                );
+                                loginProcess(data);
                             }
                         },
                     );
@@ -113,6 +111,11 @@ const Login = ({navigation}) => {
 
     const onLoginEmail = () => {
         ToastAndroid.show('Fitur ini belum tersedia', ToastAndroid.SHORT);
+    };
+
+    const loginProcess = data => {
+        dispatch(LoginAction(data.user));
+        navigation.navigate('Dashboard');
     };
 
     return (
