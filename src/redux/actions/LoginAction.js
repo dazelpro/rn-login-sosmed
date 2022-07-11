@@ -1,4 +1,4 @@
-export const LoginAction = login_action => ({
+export const LoginAction = data => ({
     type: 'LOGIN',
-    payload: login_action,
+    payload: data,
 });

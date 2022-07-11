@@ -1,6 +1,8 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+// Redux
 import {useSelector} from 'react-redux';
+// End
 
 const Dashboard = () => {
     const dataLogin = useSelector(state => state.login);
